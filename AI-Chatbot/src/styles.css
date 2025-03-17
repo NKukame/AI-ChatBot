@@ -106,6 +106,10 @@
     color: white;
 }
 
+.message li {
+    list-style-type: none;
+}
+
 .message.bot {
     align-self: flex-start;
     background-color: #f1f1f1;

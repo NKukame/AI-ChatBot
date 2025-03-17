@@ -6,6 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import dvtLogo from "./assets/dvt_logo.jpg";
 import { useMutation } from '@tanstack/react-query';
 import { getResponse } from './api/chat';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 function Home() {
 
@@ -18,9 +20,9 @@ function Home() {
     const chatMutation = useMutation({
         mutationFn: getResponse,
         onSuccess: (data) => {
-            setMessages([...messages, { text: data.response, sender: 'bot' }]);
+            setMessages([...messages, { text: <Markdown remarkPlugins={[remarkGfm]}>{data.response}</Markdown>, sender: 'bot' }]);
             console.log(data);
-                
+
         },
     });
     
