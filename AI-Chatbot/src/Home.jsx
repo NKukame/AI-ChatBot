@@ -4,12 +4,26 @@ import AssistantIcon from '@mui/icons-material/Assistant';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import dvtLogo from "./assets/dvt_logo.jpg";
+import { useMutation } from '@tanstack/react-query';
+import { getResponse } from './api/chat';
 
 function Home() {
+
+    
+
     const [isPanelVisible, setIsPanelVisible] = useState(false);
     const [userInput, setUserInput] = useState('');
     const [messages, setMessages] = useState([]);
-
+    const [query, setQuery] = useState('');
+    const chatMutation = useMutation({
+        mutationFn: getResponse,
+        onSuccess: (data) => {
+            setMessages([...messages, { text: data.response, sender: 'bot' }]);
+            console.log(data);
+                
+        },
+    });
+    
     const togglePanel = () => {
         setIsPanelVisible(!isPanelVisible);
     };
@@ -23,7 +37,9 @@ function Home() {
 
     const sendMessage = () => {
         if (userInput.trim()) {
-            setMessages([...messages, { text: userInput, sender: 'bot' }]);
+            setMessages([...messages, { text: userInput, sender: 'user' }]);
+            const query = userInput;
+            chatMutation.mutate(query);
             setUserInput('');
         }
     };
@@ -51,6 +67,11 @@ function Home() {
                                     {message.text}
                                 </div>
                             ))}
+                            {chatMutation.isPending && (
+                                <div className='message bot'>
+                                    <p>Thinking...</p>
+                                </div>
+                            )}
                         </div>
                         <div className='input-container'>
                             <textarea
